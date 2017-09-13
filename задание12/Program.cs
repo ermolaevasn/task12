@@ -97,7 +97,7 @@ namespace задание12
                         merged[i] = mass1[a++];
                 else
                   if (b < mass2.Length)
-                    merged[i] = mass2[b++];
+                    merged[i] = mass2[b++];//
                 else
                     merged[i] = mass1[a++];
             }
