@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 namespace задание12
 {
     class Program
@@ -9,6 +11,7 @@ namespace задание12
             int q = 0;//счетчик для количества перестановок
             int sr = 0;//счетчик для количества сравнений
 
+
             Console.WriteLine("Введите длину массива N"); //ввод количества чисел последовательности
             Vvod("длина массива", out N);
             Proverka("длина массива", ref N);// проверка ввода длины
@@ -18,10 +21,14 @@ namespace задание12
 
             for (int i = 0; i < N; i++)
             {
-                MasOne[i] = R.Next(-50, 50);
-                MasTwo[i] = MasOne[i];
+                MasOne[i] = R.Next(-100, 100);
+                MasTwo[i] = R.Next(-100,100);
             }
+            Console.Write("Mas1: ");
             for (int i = 0; i < N; i++) Console.Write("("+(i+1)+ ")" + MasOne[i]+ "  ");
+            Console.WriteLine();
+            Console.Write("Mas2: ");
+            for (int i = 0; i < N; i++) Console.Write("(" + (i + 1) + ")" + MasTwo[i] + "  ");
 
             Console.WriteLine();
             Console.WriteLine("Сортировка ПЕРЕМЕШИВАНИЕМ:");
@@ -36,6 +43,22 @@ namespace задание12
             Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по убыванию: " + q + " and " + sr);
 
             Console.WriteLine("Сортировка СЛИЯНИЕМ:");
+            q = 0;
+            sr = 0;
+            MasTwo =sort(MasTwo, ref q,ref sr);
+            for (int i = 0; i < N; i++) Console.Write("(" + (i + 1) + ")" + MasTwo[i] + " " );
+            Console.WriteLine();
+            Console.WriteLine("количество перестановок и сравнений в неотсортированном массиве: " + q + " and " + sr);
+            q = 0;
+            sr = 0;
+            MasTwo = sort(MasTwo, ref q, ref sr);
+            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по возрастанию: " + q + " and " + sr);
+            q = 0;
+            sr = 0;
+            Array.Reverse(MasTwo);
+            MasTwo = sort(MasTwo, ref q, ref sr);
+            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по убыванию: " + q + " and " + sr);
+
             Console.ReadKey();
         }
         public static void ArrSort(int[] array,ref int q,ref int sr)//сортировка перемешиванием
@@ -76,6 +99,49 @@ namespace задание12
                 left = b;//Сохраним последнюю перестановку как границу
             }
         }
+        public static int[] sort(int[] massive, ref int q, ref int sr)
+        {
+            if (massive.Length == 1)
+                return massive;
+            int mid_point = massive.Length / 2;
+            return merge(sort(massive.Take(mid_point).ToArray(), ref q, ref sr), sort(massive.Skip(mid_point).ToArray(), ref q, ref sr), ref q, ref sr);
+        }
+        public static int[] merge(int[] mass1, int[] mass2, ref int q, ref int sr)
+        {
+            int a = 0, b = 0;
+            int[] merged = new int[mass1.Length + mass2.Length];
+            for (int i = 0; i < mass1.Length + mass2.Length; i++)
+            {
+                if (b < mass2.Length && a < mass1.Length)
+                {
+                    if (mass1[a] > mass2[b] && b < mass2.Length)
+                    {
+                        merged[i] = mass2[b++];
+                    }
+                    else
+                    {
+                        merged[i] = mass1[a++];
+                    }
+                    q++;
+                }
+                else
+                {
+                    if (b < mass2.Length)
+                    {
+                        merged[i] = mass2[b++];
+                    }
+                    else
+                    {
+                        merged[i] = mass1[a++];
+                    }
+                    q++;
+                }
+                sr++;
+            }
+            return merged;
+        }
+
+
         static void Proverka(string s, ref int a)//функция, для проверки ввода длины послдед-ти
         {
             bool ok = false;
