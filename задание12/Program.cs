@@ -1,107 +1,113 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace задание12
 {
     class Program
     {
         static void Main(string[] args)
         {
-            int N = 10;
-            int q = 0;
+            int N;//размер массива
+            int q = 0;//счетчик для количества перестановок
+            int sr = 0;//счетчик для количества сравнений
+
+            Console.WriteLine("Введите длину массива N"); //ввод количества чисел последовательности
+            Vvod("длина массива", out N);
+            Proverka("длина массива", ref N);// проверка ввода длины
             int[] MasOne = new int[N];
             int[] MasTwo = new int[N];
-            int[] MasThree = new int[N];
             Random R = new Random ();
 
             for (int i = 0; i < N; i++)
             {
                 MasOne[i] = R.Next(-50, 50);
                 MasTwo[i] = MasOne[i];
-                MasThree[i] = MasOne[i];
             }
-            for (int i = 0; i < N; i++) Console.Write("{"+(i+1)+ "}" + MasOne[i]+ "  ");
+            for (int i = 0; i < N; i++) Console.Write("("+(i+1)+ ")" + MasOne[i]+ "  ");
+
             Console.WriteLine();
+            Console.WriteLine("Сортировка ПЕРЕМЕШИВАНИЕМ:");
+            ArrSort(MasOne,ref q,ref sr);
+            for (int i = 0; i < N; i++) Console.Write("(" + (i + 1) + ")" + MasOne[i] + "  ");
+            Console.WriteLine();
+            Console.WriteLine("количество перестановок и сравнений в неотсортированном массиве: "+q+ " and "+sr);
+            ArrSort(MasOne, ref q, ref sr);
+            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по возрастанию: " + q+ " and " + sr);
+            Array.Reverse(MasOne);
+            ArrSort(MasOne, ref q,ref sr);
+            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по убыванию: " + q + " and " + sr);
 
-            ArrSort(MasOne,ref q);
-            Console.WriteLine(q);
-            ArrSort(MasOne, ref q);
-            Console.WriteLine(q);
-            for (int i = 0; i < N; i++) Console.Write("{" + (i + 1) + "}" + MasOne[i] + "  ");
-
-
-            MasTwo = Merge_Sort(MasTwo);
-
-            System.Console.WriteLine("\n\nThe array after sorting:");
-            foreach (Int32 x in MasTwo)
-                System.Console.Write(x + " ");
+            Console.WriteLine("Сортировка СЛИЯНИЕМ:");
             Console.ReadKey();
         }
-        public static void ArrSort(int[] array,ref int q)
+        public static void ArrSort(int[] array,ref int q,ref int sr)//сортировка перемешиванием
         {
             int b = 0;
-            q = 0;
+            sr = 0;//счетчик для кол-ва сравнений
+            q = 0;//счетчик для кол-ва перестановок
             int left = 0;//Левая граница
             int right = array.Length - 1;//Правая граница
-            while (left < right)
+            while (left < right)//пока границы не сойдутся
             {
-                for (int i = left; i < right; i++)//Слева направо...
+                for (int i = left; i < right; i++)//слева направо
                 {
                     if (array[i] > array[i + 1])
                     {
+                        q++;
                         b = array[i];
                         array[i] = array[i + 1];
                         array[i + 1] = b;
                         b = i;
-                        q++;
                     }
+                    sr++;
                 }
                 right = b;//Сохраним последнюю перестановку как границу
                 if (left >= right) break;//Если границы сошлись выходим
-                for (int i = right; i > left; i--)//Справа налево...
+                for (int i = right; i > left; i--)//справа налево
                 {
                     if (array[i - 1] > array[i])
                     {
+                        q++;
                         b = array[i];
                         array[i] = array[i - 1];
                         array[i - 1] = b;
                         b = i;
-                        q++;
                     }
+                    sr++;
                 }
                 left = b;//Сохраним последнюю перестановку как границу
             }
         }
-
-        static Int32[] Merge_Sort(Int32[] massive)
+        static void Proverka(string s, ref int a)//функция, для проверки ввода длины послдед-ти
         {
-            if (massive.Length == 1)
-                return massive;
-            Int32 mid_point = massive.Length / 2;
-            return Merge(Merge_Sort(massive.Take(mid_point).ToArray()), Merge_Sort(massive.Skip(mid_point).ToArray()));
-        }
-
-        static Int32[] Merge(Int32[] mass1, Int32[] mass2)
-        {
-            Int32 a = 0, b = 0;
-            Int32[] merged = new int[mass1.Length + mass2.Length];
-            for (Int32 i = 0; i < mass1.Length + mass2.Length; i++)
+            bool ok = false;
+            string buf;
+            do
             {
-                if (b < mass2.Length && a < mass1.Length)
-                    if (mass1[a] > mass2[b])
-                        merged[i] = mass2[b++];
-                    else //if int go for
-                        merged[i] = mass1[a++];
+                if (a > 0) ok = true;
                 else
-                  if (b < mass2.Length)
-                    merged[i] = mass2[b++];//
-                else
-                    merged[i] = mass1[a++];
-            }
-            return merged;
+                {
+                    if (!ok) Console.WriteLine("\aВведите " + s + " заново");
+                    Console.Write(s + " = ");
+                    buf = Console.ReadLine();
+                    ok = Int32.TryParse(buf, out a);
+                    ok = false;
+                }
+            } while (!ok);
         }
+        static double Vvod(string s, out int l)//функция, для проверки чисел последовательности
+        {
+            bool ok;
+            string buf;
+            do
+            {
+                Console.Write(s + " = ");
+                buf = Console.ReadLine();
+                ok = Int32.TryParse(buf, out l);
+                if (!ok) Console.WriteLine("Введите " + s + " заново");
+            } while (!ok);
+            return l;
+        }
+
+
+
     }
 }
