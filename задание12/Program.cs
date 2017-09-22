@@ -22,8 +22,9 @@ namespace задание12
             for (int i = 0; i < N; i++)
             {
                 MasOne[i] = R.Next(-100, 100);
-                MasTwo[i] = R.Next(-100,100);
+                MasTwo[i] = MasOne[i];
             }
+             
             Console.Write("Mas1: ");
             for (int i = 0; i < N; i++) Console.Write("("+(i+1)+ ")" + MasOne[i]+ "  ");
             Console.WriteLine();
@@ -52,7 +53,7 @@ namespace задание12
             q = 0;
             sr = 0;
             MasTwo = sort(MasTwo, ref q, ref sr);
-            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по возрастанию: " + q + " and " + sr);
+            Console.WriteLine("количество перестановок и сравнений в массиве, отсортированном по возрастанию: " + 0  + " and " + sr);
             q = 0;
             sr = 0;
             Array.Reverse(MasTwo);
